@@ -26,6 +26,7 @@ function App() {
       date: new Date(2021, 5, 12),
     },
   ];
+  console.log('can we merge?')
   return (
     <div>
       <h2>Let's get started!</h2>
