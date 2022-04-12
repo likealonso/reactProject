@@ -25,11 +25,16 @@ const ExpenseForm = (props) => {
       amount: +enteredAmount,
       date: new Date(enteredDate),
     };
-    //console.log(expenseData)
-    props.onSaveExpenseData(expenseData);
-    setEnteredTitle("");
-    setEnteredAmount("");
-    setEnteredDate("");
+    if (expenseData.title && expenseData.amount && expenseData.date != "Invalid Date"){
+      props.onSaveExpenseData(expenseData);
+      setEnteredTitle("");
+      setEnteredAmount("");
+      setEnteredDate("");
+    } else {
+      props.handleError();
+    }
+   console.log(expenseData)
+    
   };
 
   return (
