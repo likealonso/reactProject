@@ -1,6 +1,5 @@
-import react, {useState} from 'react';
+import React, {useState} from 'react';
 import './Expenses.css';
-import ExpenseItem from './ExpenseItem';
 import ExpenseFilter from './ExpenseFilter';
 import ExpensesList from './ExpensesList';
 

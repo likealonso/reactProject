@@ -9,22 +9,25 @@ const NewExpense = (props) => {
 
     const showFormHandler = () => {
         console.log("im clicked")
-        showForm == false ? setShowForm(true) : setShowForm(false);
+        showForm === false ? setShowForm(true) : setShowForm(false);
         //console.log(showForm)
     }
 
     const errorHandler = () => {
         console.log("Handle error")
-        error == false ? setError(true) : setError(false);
+        error === false ? setError(true) : setError(false);
     }
 
     
     const saveExpenseDataHandler = (enteredExpenseData) => {
+        console.log("am i running?")
         const expenseData = {
             ...enteredExpenseData,
             id: Math.random().toString()
         }
+        console.log("i got past that expense data")
         props.onAddExpense(expenseData)
+        console.log("i got past onAddExpense")
     }
     return <div className="new-expense">
         {error && <ErrorModal handleError={errorHandler} title="Error" message={errorMessage}/> }

@@ -1,39 +1,76 @@
-import react, { useState } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import "./ExpenseForm.css";
+import Button from "./Button";
+//import { useReducer } from "react/cjs/react.production.min";
+
+const titleReducer = (state, action) => {
+  if (action.type === "TITLE_INPUT") {
+    return {value: action.val, isValid: action.val.trim().length > 0}
+  }
+  return {value: "", isValid: null}
+}
+
+const amountReducer = (state, action) => {
+  if (action.type === "AMOUNT_INPUT") {
+    return {value: action.val, isValid: action.val.trim().length > 0}
+  }
+  return {value: "", isValid: null}
+}
+
+const dateReducer = (state, action) => {
+  if (action.type === "DATE_INPUT") {
+    return {value: action.val, isValid: action.val.trim().length > 0}
+  }
+  return {value: "", isValid: null}
+}
 
 const ExpenseForm = (props) => {
   
-  const [enteredTitle, setEnteredTitle] = useState("");
-  const [enteredAmount, setEnteredAmount] = useState("");
-  const [enteredDate, setEnteredDate] = useState("");
+  const [enteredTitle, dispatchTitle] = useReducer(titleReducer, {value: "", isValid: null});
+  const [enteredAmount, dispatchAmount] = useReducer(amountReducer, {value: "", isValid: null});
+  const [enteredDate, dispatchDate] = useReducer(dateReducer, {value: "", isValid: null});
+  const [formIsValid, setFormIsValid] = useState(false);
+  console.log(enteredTitle.value)
+  console.log(enteredAmount.value)
+  console.log(enteredDate.value)
+
+  const {isValid : titleIsValid} = enteredTitle;
+  const {isValid : amountIsVaid} = enteredAmount;
+  const {isValid : dateIsValid} = enteredDate;
+
+  useEffect( () => {
+    setFormIsValid(titleIsValid && amountIsVaid && dateIsValid)
+  }, [titleIsValid, amountIsVaid, dateIsValid])
+
 
   const titleChangeHandler = (event) => {
-    setEnteredTitle(event.target.value);
+    //setEnteredTitle(event.target.value);
+    dispatchTitle({type: "TITLE_INPUT", val: event.target.value})
   };
   const amountChangeHandler = (event) => {
-    setEnteredAmount(event.target.value);
+    //setEnteredAmount(event.target.value);\
+    dispatchAmount({type: "AMOUNT_INPUT", val: event.target.value})
   };
 
   const dateChangeHandler = (event) => {
-    setEnteredDate(event.target.value);
+    dispatchDate({type: "DATE_INPUT", val: event.target.value})
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
     const expenseData = {
-      title: enteredTitle,
-      amount: +enteredAmount,
-      date: new Date(enteredDate),
+      title: enteredTitle.value,
+      amount: +enteredAmount.value,
+      date: new Date(enteredDate.value),
     };
-    if (expenseData.title && expenseData.amount && expenseData.date != "Invalid Date"){
+    // if (enteredTitle.isValid && enteredAmount.isValid && enteredDate.isValid){
       props.onSaveExpenseData(expenseData);
-      setEnteredTitle("");
-      setEnteredAmount("");
-      setEnteredDate("");
-    } else {
-      props.handleError();
-    }
-   console.log(expenseData)
+
+    // } 
+    // else {
+    //   props.handleError();
+    // }
+  //  console.log(expenseData)
     
   };
 
@@ -44,7 +81,7 @@ const ExpenseForm = (props) => {
           <label>Title</label>
           <input
             type="text"
-            value={enteredTitle}
+            value={enteredTitle.value}
             onChange={titleChangeHandler}
           />
         </div>
@@ -52,7 +89,7 @@ const ExpenseForm = (props) => {
           <label>Amount</label>
           <input
             type="number"
-            value={enteredAmount}
+            value={enteredAmount.value}
             min="0.01"
             step="0.01"
             onChange={amountChangeHandler}
@@ -62,7 +99,7 @@ const ExpenseForm = (props) => {
           <label>Date</label>
           <input
             type="date"
-            value={enteredDate}
+            value={enteredDate.value}
             min="2019-01-01"
             max="2022-12-31"
             onChange={dateChangeHandler}
@@ -73,7 +110,7 @@ const ExpenseForm = (props) => {
         <button type="button" onClick={props.changeShowForm}>
           Cancel
         </button>
-        <button type="submit">Add Expense</button>
+        <Button type="submit" disabled={!formIsValid}>Add Expense</Button>
       </div>
     </form>
   );
